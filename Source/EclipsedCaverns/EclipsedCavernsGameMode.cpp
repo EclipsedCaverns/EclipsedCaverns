@@ -1,15 +1,10 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "EclipsedCavernsGameMode.h"
-#include "EclipsedCavernsCharacter.h"
+#include "EclipsedCaverns.h"
 #include "UObject/ConstructorHelpers.h"
 
 AEclipsedCavernsGameMode::AEclipsedCavernsGameMode()
 {
-	// set default pawn class to our Blueprinted character
-	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Game/ThirdPerson/Blueprints/BP_ThirdPersonCharacter"));
-	if (PlayerPawnBPClass.Class != NULL)
-	{
-		DefaultPawnClass = PlayerPawnBPClass.Class;
-	}
+	PRINT_CALLINFO();
 }
