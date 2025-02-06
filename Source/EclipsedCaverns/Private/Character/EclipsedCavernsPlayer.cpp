@@ -2,6 +2,7 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Character/PlayerAnim.h"
 
 // Sets default values
 AEclipsedCavernsPlayer::AEclipsedCavernsPlayer()
@@ -38,6 +39,7 @@ void AEclipsedCavernsPlayer::BeginPlay()
 {
 	Super::BeginPlay();
 
+	anim = Cast<UPlayerAnim>(GetMesh()->GetAnimInstance());
 }
 
 // Called every frame
@@ -61,6 +63,8 @@ void AEclipsedCavernsPlayer::SetupPlayerInputComponent(UInputComponent* PlayerIn
 	PlayerInputComponent->BindAction(TEXT("Jump"), IE_Pressed, this, &AEclipsedCavernsPlayer::InputJump);
 	PlayerInputComponent->BindAction(TEXT("Sprint"), IE_Pressed, this, &AEclipsedCavernsPlayer::Sprint);
 	PlayerInputComponent->BindAction(TEXT("Sprint"), IE_Released, this, &AEclipsedCavernsPlayer::StopSprinting);
+	PlayerInputComponent->BindAction(TEXT("BasicAttack"), IE_Pressed, this, &AEclipsedCavernsPlayer::BasicAttack);
+	PlayerInputComponent->BindAction(TEXT("MeleeAttack"), IE_Pressed, this, &AEclipsedCavernsPlayer::MeleeAttack);
 
 
 }
@@ -113,4 +117,22 @@ void AEclipsedCavernsPlayer::Move()
 
 	// 회전 값 적용
 	//SetActorRotation(NewRotation);
+}
+
+void AEclipsedCavernsPlayer::BasicAttack()
+{
+	if (anim)
+	{
+		anim->PlayBasicAttackAnim();
+		UE_LOG(LogTemp, Warning, TEXT("basic attack"));
+	}
+}
+
+void AEclipsedCavernsPlayer::MeleeAttack()
+{
+	if (anim)
+	{
+		anim->PlayMeleeAttackAnim();
+		UE_LOG(LogTemp, Warning, TEXT("melee attack"));
+	}
 }

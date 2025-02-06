@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "PlayerAnim.h"
 #include "GameFramework/Character.h"
 #include "EclipsedCavernsPlayer.generated.h"
 
@@ -44,16 +45,19 @@ public:
 	FVector direction;
 	FRotator NewRotation;
 
-	//플레이어 키 맵핑
+	//플레이어 이동 맵핑
 	void InputHorizontal(float value);
 	void InputVertical(float value);
 	void InputJump();
 	void Sprint();
 	void StopSprinting();
 
-	// 플레이어 이동
+	class UPlayerAnim* anim;
+
+	//------------------------Move------------------------------
 	void Move();
 
-	float DefaultWalkSpeed;
-
+	//-----------------------Attack-----------------------------
+	void BasicAttack();
+	void MeleeAttack();
 };

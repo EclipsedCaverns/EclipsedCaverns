@@ -19,7 +19,22 @@ void UPlayerAnim::NativeUpdateAnimation(float DeltaSeconds)
 		//speed에 내적 값 할당
 		speed = FVector::DotProduct(forwardVector, velocity);
 
+		//좌우 속도 할당
+		FVector rightVector = player->GetActorRightVector();
+		direction = FVector::DotProduct(rightVector, velocity);
+
 		auto movement = player->GetCharacterMovement();
 		isInAir = movement->IsFalling();
 	}
+}
+
+void UPlayerAnim::PlayBasicAttackAnim()
+{
+	Montage_Play(basicAttackAnimMontage);
+
+}
+
+void UPlayerAnim::PlayMeleeAttackAnim()
+{
+	Montage_Play(meleeAttackAnimMontage);
 }
