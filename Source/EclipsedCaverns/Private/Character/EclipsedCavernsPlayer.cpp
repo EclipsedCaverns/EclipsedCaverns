@@ -3,6 +3,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Character/PlayerAnim.h"
+#include "Character/Bullet.h"
 
 // Sets default values
 AEclipsedCavernsPlayer::AEclipsedCavernsPlayer()
@@ -33,6 +34,12 @@ AEclipsedCavernsPlayer::AEclipsedCavernsPlayer()
 
 	gunMeshComp = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("GunMeshComp"));
 	gunMeshComp->SetupAttachment(GetMesh());
+	ConstructorHelpers::FObjectFinder<USkeletalMesh> TempGunMesh(TEXT("/Script/Engine.SkeletalMesh'/Game/Asset/Weapon/GrenadeGun/Mesh/SK_FPGun.SK_FPGun'"));
+	if (TempGunMesh.Succeeded())
+	{
+		gunMeshComp->SetSkeletalMesh(TempGunMesh.Object);
+		gunMeshComp->SetRelativeLocation(FVector(-14, 52, 120));
+	}
 	
 }
 
@@ -65,8 +72,7 @@ void AEclipsedCavernsPlayer::SetupPlayerInputComponent(UInputComponent* PlayerIn
 	PlayerInputComponent->BindAction(TEXT("Jump"), IE_Pressed, this, &AEclipsedCavernsPlayer::InputJump);
 	PlayerInputComponent->BindAction(TEXT("Sprint"), IE_Pressed, this, &AEclipsedCavernsPlayer::Sprint);
 	PlayerInputComponent->BindAction(TEXT("Sprint"), IE_Released, this, &AEclipsedCavernsPlayer::StopSprinting);
-	PlayerInputComponent->BindAction(TEXT("Fire"), IE_Pressed, this, &AEclipsedCavernsPlayer::BasicAttack);
-	//PlayerInputComponent->BindAction(TEXT("MeleeAttack"), IE_Pressed, this, &AEclipsedCavernsPlayer::MeleeAttack);
+	PlayerInputComponent->BindAction(TEXT("Fire"), IE_Pressed, this, &AEclipsedCavernsPlayer::InputFire);
 
 
 }
@@ -120,20 +126,16 @@ void AEclipsedCavernsPlayer::Move()
 	
 }
 
-void AEclipsedCavernsPlayer::BasicAttack()
+void AEclipsedCavernsPlayer::InputFire()
 {
-	if (anim)
+	//총알 발사 처리 
+	FTransform firePosition = gunMeshComp->GetSocketTransform(TEXT("FirePosition"));
+	GetWorld()->SpawnActor<ABullet>(bulletFactory, firePosition);
+
+	/*if (anim)
 	{
 		anim->PlayBasicAttackAnim();
 		UE_LOG(LogTemp, Warning, TEXT("basic attack"));
-	}
+	}*/
 }
 
-//void AEclipsedCavernsPlayer::MeleeAttack()
-//{
-//	if (anim)
-//	{
-//		anim->PlayMeleeAttackAnim();
-//		UE_LOG(LogTemp, Warning, TEXT("melee attack"));
-//	}
-//}

@@ -32,6 +32,9 @@ ABullet::ABullet()
 	movementComp->bShouldBounce = true; //반동여부
 	movementComp->Bounciness = 0.3f; //반동 값
 
+	//생명 시간 주기
+	InitialLifeSpan = 2.0f;
+
 }
 
 // Called when the game starts or when spawned

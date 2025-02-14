@@ -60,6 +60,9 @@ public:
 	UPROPERTY(VisibleAnywhere, Category=GunMesh)
 	class USkeletalMeshComponent* gunMeshComp;
 
-	void BasicAttack();
+	UPROPERTY(EditDefaultsOnly,Category=BulletFactory)
+	TSubclassOf<class ABullet> bulletFactory;
+
+	void InputFire();
 	
 };
