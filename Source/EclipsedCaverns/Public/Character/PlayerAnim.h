@@ -27,10 +27,11 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = PlayerAnim)
 	class UAnimMontage* basicAttackAnimMontage;
-	UPROPERTY(EditDefaultsOnly, Category=PlayerAnim)
+	/*UPROPERTY(EditDefaultsOnly, Category=PlayerAnim)
 	class UAnimMontage* meleeAttackAnimMontage;
+	*/
 
 	void PlayBasicAttackAnim();
-	void PlayMeleeAttackAnim();
+	//void PlayMeleeAttackAnim();
 
 };

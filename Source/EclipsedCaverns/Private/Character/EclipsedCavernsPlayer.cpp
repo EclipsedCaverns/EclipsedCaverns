@@ -10,7 +10,7 @@ AEclipsedCavernsPlayer::AEclipsedCavernsPlayer()
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	ConstructorHelpers::FObjectFinder<USkeletalMesh> TempMesh(TEXT("/Script/Engine.SkeletalMesh'/Game/ParagonAurora/Characters/Heroes/Aurora/Skins/FrozenHearth/Meshes/Aurora_FrozenHearth.Aurora_FrozenHearth'"));
+	ConstructorHelpers::FObjectFinder<USkeletalMesh> TempMesh(TEXT("/Script/Engine.SkeletalMesh'/Game/ParagonLtBelica/Characters/Heroes/Belica/Skins/PolarStrike/Meshes/Belica_PolarStrike.Belica_PolarStrike'"));
 	if (TempMesh.Succeeded())
 	{
 		GetMesh()->SetSkeletalMesh(TempMesh.Object);
@@ -29,9 +29,11 @@ AEclipsedCavernsPlayer::AEclipsedCavernsPlayer()
 
 	bUseControllerRotationYaw = true;
 
-	JumpMaxCount = 1;
+	JumpMaxCount = 2;
 
-	NewRotation = GetActorRotation();
+	gunMeshComp = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("GunMeshComp"));
+	gunMeshComp->SetupAttachment(GetMesh());
+	
 }
 
 // Called when the game starts or when spawned
@@ -63,8 +65,8 @@ void AEclipsedCavernsPlayer::SetupPlayerInputComponent(UInputComponent* PlayerIn
 	PlayerInputComponent->BindAction(TEXT("Jump"), IE_Pressed, this, &AEclipsedCavernsPlayer::InputJump);
 	PlayerInputComponent->BindAction(TEXT("Sprint"), IE_Pressed, this, &AEclipsedCavernsPlayer::Sprint);
 	PlayerInputComponent->BindAction(TEXT("Sprint"), IE_Released, this, &AEclipsedCavernsPlayer::StopSprinting);
-	PlayerInputComponent->BindAction(TEXT("BasicAttack"), IE_Pressed, this, &AEclipsedCavernsPlayer::BasicAttack);
-	PlayerInputComponent->BindAction(TEXT("MeleeAttack"), IE_Pressed, this, &AEclipsedCavernsPlayer::MeleeAttack);
+	PlayerInputComponent->BindAction(TEXT("Fire"), IE_Pressed, this, &AEclipsedCavernsPlayer::BasicAttack);
+	//PlayerInputComponent->BindAction(TEXT("MeleeAttack"), IE_Pressed, this, &AEclipsedCavernsPlayer::MeleeAttack);
 
 
 }
@@ -115,8 +117,7 @@ void AEclipsedCavernsPlayer::Move()
 	AddMovementInput(direction);
 	direction = FVector::ZeroVector;
 
-	// 회전 값 적용
-	//SetActorRotation(NewRotation);
+	
 }
 
 void AEclipsedCavernsPlayer::BasicAttack()
@@ -128,11 +129,11 @@ void AEclipsedCavernsPlayer::BasicAttack()
 	}
 }
 
-void AEclipsedCavernsPlayer::MeleeAttack()
-{
-	if (anim)
-	{
-		anim->PlayMeleeAttackAnim();
-		UE_LOG(LogTemp, Warning, TEXT("melee attack"));
-	}
-}
+//void AEclipsedCavernsPlayer::MeleeAttack()
+//{
+//	if (anim)
+//	{
+//		anim->PlayMeleeAttackAnim();
+//		UE_LOG(LogTemp, Warning, TEXT("melee attack"));
+//	}
+//}

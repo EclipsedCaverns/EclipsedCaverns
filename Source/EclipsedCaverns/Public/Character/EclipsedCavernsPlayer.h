@@ -43,7 +43,6 @@ public:
 	float SprintSpeedMultiplier = 2.0f;
 
 	FVector direction;
-	FRotator NewRotation;
 
 	//플레이어 이동 맵핑
 	void InputHorizontal(float value);
@@ -58,6 +57,9 @@ public:
 	void Move();
 
 	//-----------------------Attack-----------------------------
+	UPROPERTY(VisibleAnywhere, Category=GunMesh)
+	class USkeletalMeshComponent* gunMeshComp;
+
 	void BasicAttack();
-	void MeleeAttack();
+	
 };

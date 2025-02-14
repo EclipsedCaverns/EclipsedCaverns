@@ -31,10 +31,11 @@ void UPlayerAnim::NativeUpdateAnimation(float DeltaSeconds)
 void UPlayerAnim::PlayBasicAttackAnim()
 {
 	Montage_Play(basicAttackAnimMontage);
+	UE_LOG(LogTemp, Warning, TEXT("basic attack"));
 
 }
 
-void UPlayerAnim::PlayMeleeAttackAnim()
+/*void UPlayerAnim::PlayMeleeAttackAnim()
 {
 	Montage_Play(meleeAttackAnimMontage);
-}
+}*/
