@@ -29,7 +29,7 @@ public:
 
 	UPROPERTY(VisibleAnywhere,Category=Camera)
 	class USpringArmComponent* springArmComp;
-	UPROPERTY(VisibleAnywhere,Category=Camera)
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category=Camera)
 	class UCameraComponent* CamComp;
 
 	//플레이어 마우스 조작 
@@ -60,9 +60,31 @@ public:
 	UPROPERTY(VisibleAnywhere, Category=GunMesh)
 	class USkeletalMeshComponent* gunMeshComp;
 
+	UPROPERTY(VisibleAnywhere,Category=GunMesh)
+	class UStaticMeshComponent* sniperGunComp;
+
 	UPROPERTY(EditDefaultsOnly,Category=BulletFactory)
 	TSubclassOf<class ABullet> bulletFactory;
 
 	void InputFire();
+
+	//유탄총 사용 여부
+	bool bUsingGrenadeGun = true;
+	//유탄총으로 변경
+	void ChangeToGrenadeGun();
+	//스나이퍼건으로 변경
+	void ChangeToSniperGun();
+	//스나이퍼 조준
+	void SniperAim();
+
+	bool bSniperAim = false;
+
+	UPROPERTY(EditDefaultsOnly,Category=SniperUI)
+	TSubclassOf<class UUserWidget> sniperUIFactory;
+
+	class UUserWidget* _sniperUI;
+
+	UPROPERTY(EditAnywhere, Category=BulletEffect)
+	class UParticleSystem* bulletEffectFactory;
 	
 };
