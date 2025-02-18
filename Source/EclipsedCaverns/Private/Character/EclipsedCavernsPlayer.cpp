@@ -58,6 +58,8 @@ void AEclipsedCavernsPlayer::BeginPlay()
 	Super::BeginPlay();
 
 	_sniperUI = CreateWidget(GetWorld(), sniperUIFactory);
+	_crosshairUI = CreateWidget(GetWorld(), crosshairUIFactory);
+	_crosshairUI->AddToViewport();
 
 	//±âº»À¸·Î À¯ÅºÃÑ »ç¿ë
 	ChangeToGrenadeGun();
@@ -168,6 +170,13 @@ void AEclipsedCavernsPlayer::InputFire()
 			FTransform bulletTrans;
 			bulletTrans.SetLocation(hitInfo.ImpactPoint);
 			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), bulletEffectFactory, bulletTrans);
+
+			auto hitComp = hitInfo.GetComponent();
+			if (hitComp &&hitComp->IsSimulatingPhysics())
+			{
+				FVector force = -hitInfo.ImpactNormal * hitComp->GetMass() * 500000;
+				hitComp->AddForce(force);
+			}
 		}
 	}
 
@@ -203,12 +212,14 @@ void AEclipsedCavernsPlayer::SniperAim()
 		bSniperAim = true;
 		_sniperUI->AddToViewport();
 		CamComp->SetFieldOfView(45.0f);
+		_crosshairUI->RemoveFromParent();
 	}
 	else
 	{
 		bSniperAim = false;
 		_sniperUI->RemoveFromParent();
 		CamComp->SetFieldOfView(90.0f);
+		_crosshairUI->AddToViewport();
 	}
 
 }
