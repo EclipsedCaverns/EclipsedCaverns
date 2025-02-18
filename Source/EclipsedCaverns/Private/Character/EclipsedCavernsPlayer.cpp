@@ -57,9 +57,21 @@ void AEclipsedCavernsPlayer::BeginPlay()
 {
 	Super::BeginPlay();
 
+	if (GetActorScale3D().IsNearlyZero())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Player scale was nearly zero! Resetting to 1.0"));
+		SetActorScale3D(FVector(1.0f));
+	}
+
 	_sniperUI = CreateWidget(GetWorld(), sniperUIFactory);
 	_crosshairUI = CreateWidget(GetWorld(), crosshairUIFactory);
 	_crosshairUI->AddToViewport();
+
+	CamComp = FindComponentByClass<UCameraComponent>();
+	if (!CamComp)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Failed to find Camera Component!"));
+	}
 
 	//기본으로 유탄총 사용
 	ChangeToGrenadeGun();
@@ -207,7 +219,28 @@ void AEclipsedCavernsPlayer::SniperAim()
 	{
 		return;
 	}
-	if (bSniperAim==false)
+
+	// 개별 로그 추가 (어떤 변수가 NULL인지 확인)
+	if (!_sniperUI)
+	{
+		UE_LOG(LogTemp, Error, TEXT("SniperAim: _sniperUI is NULL!"));
+	}
+	if (!_crosshairUI)
+	{
+		UE_LOG(LogTemp, Error, TEXT("SniperAim: _crosshairUI is NULL!"));
+	}
+	if (!CamComp)
+	{
+		UE_LOG(LogTemp, Error, TEXT("SniperAim: CamComp is NULL!"));
+	}
+
+	// NULL이 있으면 크래시 방지를 위해 리턴
+	if (!_sniperUI || !_crosshairUI || !CamComp)
+	{
+		return;
+	}
+
+	if (bSniperAim == false)
 	{
 		bSniperAim = true;
 		_sniperUI->AddToViewport();
@@ -221,6 +254,6 @@ void AEclipsedCavernsPlayer::SniperAim()
 		CamComp->SetFieldOfView(90.0f);
 		_crosshairUI->AddToViewport();
 	}
-
 }
+
 

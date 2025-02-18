@@ -6,5 +6,5 @@
 
 AEclipsedCavernsGameMode::AEclipsedCavernsGameMode()
 {
-	PRINT_CALLINFO();
+	//PRINT_CALLINFO();
 }
