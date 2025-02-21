@@ -51,6 +51,7 @@ public:
 	void Sprint();
 	void StopSprinting();
 
+	UPROPERTY(EditAnywhere,Category=PlayerAnim)
 	class UPlayerAnim* anim;
 
 	//------------------------Move------------------------------

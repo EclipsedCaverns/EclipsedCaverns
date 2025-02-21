@@ -26,12 +26,8 @@ public:
 	bool isInAir = false;
 
 	UPROPERTY(EditDefaultsOnly, Category = PlayerAnim)
-	class UAnimMontage* basicAttackAnimMontage;
-	/*UPROPERTY(EditDefaultsOnly, Category=PlayerAnim)
-	class UAnimMontage* meleeAttackAnimMontage;
-	*/
+	class UAnimMontage* attackAnimMontage;
 
-	void PlayBasicAttackAnim();
-	//void PlayMeleeAttackAnim();
+	void PlayAttackAnim();
 
 };

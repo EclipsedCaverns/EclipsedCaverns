@@ -33,7 +33,7 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,Category=FSM)
+	UPROPERTY(VisibleAnywhere,BlueprintReadWrite,Category=FSM)
 	EEnemyState currentState = EEnemyState::Idle;
 
 	void IdleState();
@@ -43,6 +43,30 @@ public:
 	void DieState();
 
 	UPROPERTY(EditDefaultsOnly,Category=FSM)
-	float idleDelayTime = 2;
+	float idleDelayTime = 2.0f;
 	float currentTime = 0;
+
+	UPROPERTY(VisibleAnywhere,Category=FSM)
+	class AEclipsedCavernsPlayer* target;
+
+	UPROPERTY()
+	class AEnemy* me;
+
+	UPROPERTY(EditAnywhere,Category=FSM)
+	float attackRange=150.0f;
+
+	UPROPERTY(EditAnywhere,Category=FSM)
+	float attackDelayTime = 2.0f;
+
+	void OnDamageProcess();
+
+	//Ã¼·Â
+	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category=FSM)
+	int32 hp = 3;
+
+	UPROPERTY(EditAnywhere,Category=FSM)
+	float damageDelayTime = 2.0f;
+
+
+
 };

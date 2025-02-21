@@ -6,6 +6,7 @@
 #include "Character/Bullet.h"
 #include "Blueprint/UserWidget.h"
 #include "Kismet/GameplayStatics.h"
+#include "Enemy/EnemyFSM.h"
 
 // Sets default values
 AEclipsedCavernsPlayer::AEclipsedCavernsPlayer()
@@ -34,21 +35,24 @@ AEclipsedCavernsPlayer::AEclipsedCavernsPlayer()
 	JumpMaxCount = 2;
 
 	gunMeshComp = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("GunMeshComp"));
-	gunMeshComp->SetupAttachment(GetMesh());
+	gunMeshComp->SetupAttachment(GetMesh(),TEXT("hand_rSocket"));
 	ConstructorHelpers::FObjectFinder<USkeletalMesh> TempGunMesh(TEXT("/Script/Engine.SkeletalMesh'/Game/Asset/Weapon/GrenadeGun/Mesh/SK_FPGun.SK_FPGun'"));
 	if (TempGunMesh.Succeeded())
 	{
 		gunMeshComp->SetSkeletalMesh(TempGunMesh.Object);
-		gunMeshComp->SetRelativeLocation(FVector(-14, 52, 120));
+		gunMeshComp->SetRelativeLocation(FVector(-17, 10, -3));
+		gunMeshComp->SetRelativeRotation(FRotator(0, 90, 0));
+
 	}
 
 	sniperGunComp=CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SniperGunComp"));
-	sniperGunComp->SetupAttachment(GetMesh());
+	sniperGunComp->SetupAttachment(GetMesh(),TEXT("hand_rSocket"));
 	ConstructorHelpers::FObjectFinder<UStaticMesh> TempSniperMesh(TEXT("/Script/Engine.StaticMesh'/Game/Asset/Weapon/SniperGun/sniper11.sniper11'"));
 	if (TempSniperMesh.Succeeded())
 	{
 		sniperGunComp->SetStaticMesh(TempSniperMesh.Object);
-		sniperGunComp->SetRelativeLocation(FVector(-22, 55, 120));
+		sniperGunComp->SetRelativeLocation(FVector(-42, 7, 1));
+		sniperGunComp->SetRelativeRotation(FRotator(0, 90, 0));
 		sniperGunComp->SetRelativeScale3D(FVector(0.15f));
 	}
 }
@@ -161,6 +165,11 @@ void AEclipsedCavernsPlayer::InputFire()
 {
 	//총알 발사 처리
 
+	if (anim)
+	{
+		anim->PlayAttackAnim();
+	}
+
 	if (bUsingGrenadeGun)
 	{
 		FTransform firePosition = gunMeshComp->GetSocketTransform(TEXT("FirePosition"));
@@ -189,14 +198,17 @@ void AEclipsedCavernsPlayer::InputFire()
 				FVector force = -hitInfo.ImpactNormal * hitComp->GetMass() * 500000;
 				hitComp->AddForce(force);
 			}
+
+			auto enemy = hitInfo.GetActor()->GetDefaultSubobjectByName(TEXT("FSM"));
+			if (enemy)
+			{
+				auto enemyFSM = Cast<UEnemyFSM>(enemy);
+				enemyFSM->OnDamageProcess();
+			}
 		}
 	}
 
-	/*if (anim)
-	{
-		anim->PlayBasicAttackAnim();
-		UE_LOG(LogTemp, Warning, TEXT("basic attack"));
-	}*/
+	
 }
 
 void AEclipsedCavernsPlayer::ChangeToGrenadeGun()
