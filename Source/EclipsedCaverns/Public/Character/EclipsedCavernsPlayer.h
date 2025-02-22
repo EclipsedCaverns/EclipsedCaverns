@@ -94,5 +94,12 @@ public:
 
 	UPROPERTY()
 	class UUserWidget* _crosshairUI;
-	
+
+	//카메라 셰이크
+	UPROPERTY(EditDefaultsOnly,Category=CameraMotion)
+	TSubclassOf<class UCameraShakeBase> cameraShake;
+
+	//총알 발사 사운드
+	UPROPERTY(EditDefaultsOnly,Category=Sound)
+	class USoundBase* bulletSound;
 };

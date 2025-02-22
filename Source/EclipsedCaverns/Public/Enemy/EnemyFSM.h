@@ -53,10 +53,10 @@ public:
 	class AEnemy* me;
 
 	UPROPERTY(EditAnywhere,Category=FSM)
-	float attackRange=150.0f;
+	float attackRange=250.0f;
 
 	UPROPERTY(EditAnywhere,Category=FSM)
-	float attackDelayTime = 2.0f;
+	float attackDelayTime = 3.0f;
 
 	void OnDamageProcess();
 
@@ -67,6 +67,7 @@ public:
 	UPROPERTY(EditAnywhere,Category=FSM)
 	float damageDelayTime = 2.0f;
 
-
+	UPROPERTY()
+	class UEnemyAnim* anim;
 
 };

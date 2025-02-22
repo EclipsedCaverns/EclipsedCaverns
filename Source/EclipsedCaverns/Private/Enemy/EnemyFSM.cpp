@@ -5,6 +5,7 @@
 #include "Character/EclipsedCavernsPlayer.h"
 #include "Enemy/Enemy.h"
 #include "Kismet/GameplayStatics.h"
+#include "Enemy/EnemyAnim.h"
 
 // Sets default values for this component's properties
 UEnemyFSM::UEnemyFSM()
@@ -25,7 +26,8 @@ void UEnemyFSM::BeginPlay()
 	auto actor = UGameplayStatics::GetActorOfClass(GetWorld(), AEclipsedCavernsPlayer::StaticClass());
 	target = Cast<AEclipsedCavernsPlayer>(actor);
 	me = Cast<AEnemy>(GetOwner());
-	
+
+	anim = Cast<UEnemyAnim>(me->GetMesh()->GetAnimInstance());
 }
 
 
@@ -63,6 +65,8 @@ void UEnemyFSM::IdleState()
 	{
 		currentState = EEnemyState::Move;
 		currentTime = 0;
+
+		anim->animState = currentState;
 	}
 }
 
@@ -77,6 +81,9 @@ void UEnemyFSM::MoveState()
 	if (dir.Size()<attackRange)
 	{
 		currentState = EEnemyState::Attack;
+		anim->animState = currentState;
+		anim->bAttackPlay = true;
+		currentTime = attackDelayTime;
 	}
 }
 
@@ -87,12 +94,14 @@ void UEnemyFSM::AttackState()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Attack!"));
 		currentTime = 0;
+		anim->bAttackPlay = true;
 	}
 
 	float distance = FVector::Distance(target->GetActorLocation(), me->GetActorLocation());
 	if (distance>attackRange)
 	{
 		currentState = EEnemyState::Move;
+		anim->animState = currentState;
 	}
 }
 
@@ -105,6 +114,7 @@ void UEnemyFSM::DamageState()
 	{
 		currentState = EEnemyState::Idle;
 		currentTime = 0;
+		anim->animState = currentState;
 	}
 }
 
@@ -120,10 +130,18 @@ void UEnemyFSM::OnDamageProcess()
 	if (hp>0)
 	{
 		currentState = EEnemyState::Damage;
+
+		currentTime = 0;
+
+		int32 index = FMath::RandRange(0, 1);
+		FString sectionName = FString::Printf(TEXT("Damage%d"), index);
+		anim->PlayDamageAnim(FName(*sectionName));
 	}
 	else
 	{
 		currentState = EEnemyState::Die;
 	}
+	anim->animState = currentState;
+
 }
 

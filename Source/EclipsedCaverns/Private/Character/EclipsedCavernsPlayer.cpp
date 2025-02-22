@@ -55,6 +55,12 @@ AEclipsedCavernsPlayer::AEclipsedCavernsPlayer()
 		sniperGunComp->SetRelativeRotation(FRotator(0, 90, 0));
 		sniperGunComp->SetRelativeScale3D(FVector(0.15f));
 	}
+
+	ConstructorHelpers::FObjectFinder<USoundBase> tempSound(TEXT("/Script/Engine.SoundWave'/Game/Asset/Weapon/SniperGun/Rifle.Rifle'"));
+	if (tempSound.Succeeded())
+	{
+		bulletSound = tempSound.Object;
+	}
 }
 
 void AEclipsedCavernsPlayer::BeginPlay()
@@ -165,16 +171,24 @@ void AEclipsedCavernsPlayer::InputFire()
 {
 	//총알 발사 처리
 
+	//애니메이션 몽타주 재생
 	if (anim)
 	{
 		anim->PlayAttackAnim();
 	}
+	//카메라 셰이크 재생
+	auto controller = GetWorld()->GetFirstPlayerController();
+	controller->PlayerCameraManager->StartCameraShake(cameraShake);
+
+	UGameplayStatics::PlaySound2D(GetWorld(), bulletSound);
 
 	if (bUsingGrenadeGun)
 	{
 		FTransform firePosition = gunMeshComp->GetSocketTransform(TEXT("FirePosition"));
 		GetWorld()->SpawnActor<ABullet>(bulletFactory, firePosition);
 	}
+
+	
 
 	else
 	{
