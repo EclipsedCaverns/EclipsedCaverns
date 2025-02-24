@@ -3,9 +3,11 @@
 
 #include "Enemy/EnemyFSM.h"
 #include "Character/EclipsedCavernsPlayer.h"
+#include "Components/CapsuleComponent.h"
 #include "Enemy/Enemy.h"
 #include "Kismet/GameplayStatics.h"
 #include "Enemy/EnemyAnim.h"
+#include "Runtime/AIModule/Classes/AIController.h"
 
 // Sets default values for this component's properties
 UEnemyFSM::UEnemyFSM()
@@ -28,6 +30,8 @@ void UEnemyFSM::BeginPlay()
 	me = Cast<AEnemy>(GetOwner());
 
 	anim = Cast<UEnemyAnim>(me->GetMesh()->GetAnimInstance());
+
+	ai = Cast<AAIController>(me->GetController());
 }
 
 
@@ -60,7 +64,7 @@ void UEnemyFSM::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 void UEnemyFSM::IdleState()
 {
 	currentTime += GetWorld()->DeltaTimeSeconds;
-	//UE_LOG(LogTemp, Warning, TEXT("IdleState!"));
+
 	if (currentTime>idleDelayTime)
 	{
 		currentState = EEnemyState::Move;
@@ -74,9 +78,8 @@ void UEnemyFSM::MoveState()
 {
 	FVector destination = target->GetActorLocation();
 	FVector dir = destination - me->GetActorLocation();
-	me->AddMovementInput(dir.GetSafeNormal());
-	//UE_LOG(LogTemp, Warning, TEXT("MoveState!"));
-
+	//me->AddMovementInput(dir.GetSafeNormal());
+	ai->MoveToLocation(destination);
 
 	if (dir.Size()<attackRange)
 	{
@@ -120,7 +123,13 @@ void UEnemyFSM::DamageState()
 
 void UEnemyFSM::DieState()
 {
+	//아직 죽음 애니메이션 끝나지 않았다면
+	if (anim->bDieDone==false)
+	{
+		return;
+	}
 	me->Destroy();
+
 }
 
 void UEnemyFSM::OnDamageProcess()
@@ -140,6 +149,10 @@ void UEnemyFSM::OnDamageProcess()
 	else
 	{
 		currentState = EEnemyState::Die;
+
+		me->GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+		anim->PlayDamageAnim(TEXT("Die"));
 	}
 	anim->animState = currentState;
 
